@@ -557,16 +557,33 @@ function setPersona(p) {
 function handlePhoto(e) {
   const file = e.target.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    photoBase64 = ev.target.result.split(',')[1];
+
+  const img = new Image();
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  img.onload = () => {
+    const maxWidth = 512;
+    const scale = maxWidth / img.width;
+
+    canvas.width = maxWidth;
+    canvas.height = img.height * scale;
+
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    const compressed = canvas.toDataURL('image/jpeg', 0.6);
+
+    photoBase64 = compressed.split(',')[1];
+
     const prev = document.getElementById('photo-preview');
-    prev.src = ev.target.result;
+    prev.src = compressed;
     prev.style.display = 'block';
+
     document.getElementById('upload-icon').style.display = 'none';
     document.getElementById('upload-label').style.display = 'none';
   };
-  reader.readAsDataURL(file);
+
+  img.src = URL.createObjectURL(file);
 }
 
 // drag-drop
@@ -661,22 +678,33 @@ async function triggerRoast() {
   startThinking();
 
   try {
-    const res = await fetch('/api/roast', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) {
-      const e = await res.json();
-      throw new Error(e.error || 'Server error');
-    }
-    const data = await res.json();
-    lastRoastData = data;
-    displayRoast(data);
-  } catch(e) {
-    stopThinking();
-    alert('Roast failed: ' + e.message);
-  } finally {
+  const res = await fetch('/api/roast', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  const text = await res.text(); // ✅ ALWAYS READ TEXT FIRST
+
+  let data;
+  try {
+    data = JSON.parse(text); // ✅ SAFE PARSE
+  } catch (err) {
+    console.error('Non-JSON response:', text);
+    throw new Error(text.slice(0, 100)); // show real error
+  }
+
+  if (!res.ok) {
+    throw new Error(data?.error || 'Server error');
+  }
+
+  lastRoastData = data;
+  displayRoast(data);
+
+} catch (e) {
+  stopThinking();
+  alert('Roast failed: ' + e.message);
+} finally {
     btn.disabled = false;
     btn.classList.remove('loading');
     btn.innerHTML = '<i class="fa-solid fa-fire-flame-curved"></i> ROAST ME';
