@@ -112,7 +112,14 @@ The burnScore is 1-10 based on how savage the roast was.`;
             temperature
           })
         });
-        const d = await r.json();
+        const raw = await r.text();
+
+let d;
+try {
+  d = JSON.parse(raw);
+} catch {
+  console.log('[ROAST] Grok non-JSON:', raw);
+}
         if (r.ok) {
           const text = d?.choices?.[0]?.message?.content;
           if (text) {
@@ -138,7 +145,15 @@ The burnScore is 1-10 based on how savage the roast was.`;
             headers: { 'Authorization': `Bearer ${GQKEY}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ model, messages: openAiMessages, max_tokens: 1200, temperature })
           });
-          const d = await r.json();
+          const raw = await r.text();
+
+let d;
+try {
+  d = JSON.parse(raw);
+} catch {
+  console.log(`[ROAST] Groq ${model} non-JSON:`, raw);
+  continue;
+}
           if (r.ok) {
             const text = d?.choices?.[0]?.message?.content;
             if (text) {
@@ -176,7 +191,15 @@ The burnScore is 1-10 based on how savage the roast was.`;
               })
             }
           );
-          const d = await r.json();
+          const raw = await r.text();
+
+let d;
+try {
+  d = JSON.parse(raw);
+} catch {
+  console.log(`[ROAST] Gemini ${model} non-JSON:`, raw);
+  continue;
+}
           if (r.ok) {
             const text = d?.candidates?.[0]?.content?.parts?.[0]?.text;
             if (text) {
