@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROAST.exe | AI Roast Machine | by Anurag Rajput</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' rx='20' fill='%23FF4500'/%3E%3Ctext x='48' y='68' font-size='58' text-anchor='middle' font-family='serif'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E">
+  
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <div class="nav-logo"><i class="fa-solid fa-fire-flame-curved"></i></div>
+    <span class="nav-title">ROAST.exe</span>
+  </a>
+  <div class="nav-right">
+    <span class="nav-badge">AI Roast Machine &middot; ANURAG.exe</span>
+    <a class="nav-link" href="https://github.com/instai4" target="_blank"><i class="fa-brands fa-github"></i></a>
+    <a class="nav-link" href="https://instai4.github.io/PORT-FOLIO/" target="_blank"><i class="fa-solid fa-globe"></i></a>
+  </div>
+</nav>
+
+<div class="wrapper">
+
+  <!-- HERO -->
+  <div class="hero">
+    <i class="fa-solid fa-fire-flame-curved hero-icon"></i>
+    <h1 class="hero-title">ROAST.exe</h1>
+    <span class="hero-sub">AI-Powered Roast Machine</span>
+    <p class="hero-tagline">Feed the AI your bio, photo, GitHub or LinkedIn. It will destroy you. Lovingly.</p>
+  </div>
+
+  <!-- INPUT MODE -->
+  <div class="sec-card">
+    <div>
+      <div class="sec-label"><i class="fa-solid fa-arrow-pointer"></i> Choose your weapon</div>
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="bio" onclick="setMode('bio')">
+          <i class="fa-solid fa-id-card"></i> Bio / Description
+        </button>
+        <button class="mode-tab" data-mode="photo" onclick="setMode('photo')">
+          <i class="fa-solid fa-camera"></i> Photo
+        </button>
+        <button class="mode-tab" data-mode="github" onclick="setMode('github')">
+          <i class="fa-brands fa-github"></i> GitHub
+        </button>
+        <button class="mode-tab" data-mode="linkedin" onclick="setMode('linkedin')">
+          <i class="fa-brands fa-linkedin"></i> LinkedIn
+        </button>
+      </div>
+    </div>
+
+    <!-- BIO PANEL -->
+    <div class="input-panel show" id="panel-bio">
+      <textarea id="bio-input" placeholder="Paste your bio, about me, resume summary, or just describe yourself honestly... The more you give, the harder we hit."></textarea>
+    </div>
+
+    <!-- PHOTO PANEL -->
+    <div class="input-panel" id="panel-photo">
+      <div class="photo-drop" id="photo-drop" onclick="document.getElementById('photo-file').click()">
+        <input type="file" id="photo-file" accept="image/*" onchange="handlePhoto(event)">
+        <i class="fa-solid fa-cloud-arrow-up" id="upload-icon"></i>
+        <span id="upload-label">Drop photo here or click to upload</span>
+        <img id="photo-preview" alt="preview">
+      </div>
+      <textarea id="photo-context" placeholder="Optional: add context about yourself to make the roast more personal..." style="min-height:70px"></textarea>
+    </div>
+
+    <!-- GITHUB PANEL -->
+    <div class="input-panel" id="panel-github">
+      <input type="url" id="github-url" placeholder="https://github.com/yourusername">
+      <textarea id="github-bio" placeholder="Optional: paste your GitHub bio or README.md for extra ammo..." style="min-height:80px"></textarea>
+    </div>
+
+    <!-- LINKEDIN PANEL -->
+    <div class="input-panel" id="panel-linkedin">
+      <input type="url" id="linkedin-url" placeholder="https://linkedin.com/in/yourprofile">
+      <textarea id="linkedin-about" placeholder="Paste your LinkedIn About section or headline... corporate speak = extra roast points." style="min-height:100px"></textarea>
+    </div>
+  </div>
+
+  <!-- INTENSITY + PERSONA -->
+  <div class="sec-card">
+    <div>
+      <div class="sec-label"><i class="fa-solid fa-gauge-high"></i> Roast Intensity</div>
+      <div class="intensity-row">
+        <button class="intensity-btn" data-i="mild" onclick="setIntensity('mild')">
+          <span class="i-icon"><i class="fa-solid fa-face-smile-wink" style="color:var(--yellow)"></i></span>
+          <span class="i-name">Mild</span>
+          <span class="i-desc">Friendly teasing</span>
+        </button>
+        <button class="intensity-btn active" data-i="savage" onclick="setIntensity('savage')">
+          <span class="i-icon"><i class="fa-solid fa-skull" style="color:var(--orange)"></i></span>
+          <span class="i-name">Savage</span>
+          <span class="i-desc">No filter</span>
+        </button>
+        <button class="intensity-btn" data-i="nuclear" onclick="setIntensity('nuclear')">
+          <span class="i-icon"><i class="fa-solid fa-radiation" style="color:var(--red)"></i></span>
+          <span class="i-name">Nuclear</span>
+          <span class="i-desc">Absolute chaos</span>
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-label"><i class="fa-solid fa-masks-theater"></i> Roaster Persona</div>
+      <div class="persona-row">
+        <button class="persona-btn active" data-p="comedian" onclick="setPersona('comedian')">
+          <span class="p-icon"><i class="fa-solid fa-microphone" style="color:var(--yellow)"></i></span>
+          <span class="p-name">Comedian</span>
+        </button>
+        <button class="persona-btn" data-p="gordon" onclick="setPersona('gordon')">
+          <span class="p-icon"><i class="fa-solid fa-utensils" style="color:var(--orange)"></i></span>
+          <span class="p-name">Gordon Ramsay</span>
+        </button>
+        <button class="persona-btn" data-p="shakespeare" onclick="setPersona('shakespeare')">
+          <span class="p-icon"><i class="fa-solid fa-feather-pointed" style="color:var(--smoke)"></i></span>
+          <span class="p-name">Shakespeare</span>
+        </button>
+        <button class="persona-btn" data-p="drill" onclick="setPersona('drill')">
+          <span class="p-icon"><i class="fa-solid fa-person-military-pointing" style="color:var(--green)"></i></span>
+          <span class="p-name">Drill Sergeant</span>
+        </button>
+        <button class="persona-btn" data-p="therapist" onclick="setPersona('therapist')">
+          <span class="p-icon"><i class="fa-solid fa-brain" style="color:var(--blue)"></i></span>
+          <span class="p-name">Therapist</span>
+        </button>
+        <button class="persona-btn" data-p="gen-z" onclick="setPersona('gen-z')">
+          <span class="p-icon"><i class="fa-solid fa-mobile-screen" style="color:var(--fire)"></i></span>
+          <span class="p-name">Gen-Z</span>
+        </button>
+        <button class="persona-btn" data-p="ai" onclick="setPersona('ai')">
+          <span class="p-icon"><i class="fa-solid fa-robot" style="color:var(--blue)"></i></span>
+          <span class="p-name">Cold AI</span>
+        </button>
+        <button class="persona-btn" data-p="villain" onclick="setPersona('villain')">
+          <span class="p-icon"><i class="fa-solid fa-chess-king" style="color:var(--red)"></i></span>
+          <span class="p-name">Villain</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROAST BUTTON -->
+  <button class="roast-btn" id="roast-btn" onclick="triggerRoast()">
+    <i class="fa-solid fa-fire-flame-curved"></i>
+    ROAST ME
+  </button>
+
+  <!-- LOADING BAR -->
+  <div class="loading-bar" id="loading-bar"><div class="loading-fill"></div></div>
+
+  <!-- THINKING MESSAGES -->
+  <div class="thinking-msgs" id="thinking-msgs"></div>
+
+  <!-- ROAST OUTPUT CARD -->
+  <div class="roast-card" id="roast-card">
+    <div class="roast-card-header">
+      <div class="roast-badge">
+        <div class="roast-badge-icon" id="persona-icon-display"><i class="fa-solid fa-fire"></i></div>
+        <div>
+          <div class="roast-badge-text">Roasted by</div>
+          <div class="roast-badge-name" id="persona-name-display">The Comedian</div>
+        </div>
+      </div>
+      <span class="intensity-tag savage" id="intensity-tag-display">Savage</span>
+    </div>
+
+    <div class="roast-divider"></div>
+
+    <div class="roast-text" id="roast-output"></div>
+
+    <div class="burn-meter">
+      <div class="burn-label">
+        <span class="burn-label-txt"><i class="fa-solid fa-fire" style="margin-right:.3rem;color:var(--fire)"></i>Burn Score</span>
+        <span class="burn-val" id="burn-score-val">0/10</span>
+      </div>
+      <div class="burn-track">
+        <div class="burn-fill" id="burn-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="roast-divider"></div>
+
+    <div class="roast-actions">
+      <button class="action-btn copy-btn" id="copy-btn" onclick="copyRoast()">
+        <i class="fa-solid fa-copy"></i> Copy Roast
+      </button>
+      <button class="action-btn share-x" onclick="shareX()">
+        <i class="fa-brands fa-x-twitter"></i> Share on X
+      </button>
+      <button class="action-btn" onclick="roastAgain()">
+        <i class="fa-solid fa-rotate"></i> Roast Again
+      </button>
+      <button class="action-btn" onclick="newRoast()">
+        <i class="fa-solid fa-plus"></i> New Roast
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer-bar">
+  <span class="footer-credit">
+    Built by <a href="https://instai4.github.io/PORT-FOLIO/" target="_blank">ANURAG RAJPUT</a>
+    &middot; Data Science Student @ DBUU
+  </span>
+  <div class="footer-links">
+    <a href="https://github.com/instai4" target="_blank"><i class="fa-brands fa-github"></i></a>
+    <a href="https://www.linkedin.com/in/anurag-singh-43230a380/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+    <a href="https://instai4.github.io/PORT-FOLIO/" target="_blank"><i class="fa-solid fa-globe"></i></a>
+  </div>
+</div>
+
+
+</body>
+</html>
