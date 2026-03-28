@@ -92,8 +92,16 @@ drop.addEventListener('drop', e => {
         document.getElementById('photo-file').files = e.dataTransfer.files;
         handlePhoto({ target: { files: [file] } });
     }
-});
+    const fileInput = document.getElementById('photo-file');
 
+drop.addEventListener('click', () => {
+  // ❌ If image already uploaded → do nothing
+  if (photoBase64) return;
+
+  // ✅ Otherwise open file picker
+  fileInput.click();
+});
+});
 /* ── BUILD PAYLOAD ── */
 function buildPayload() {
     const base = { mode: currentMode, intensity: currentIntensity, persona: currentPersona };
